@@ -3,7 +3,7 @@ require "sinatra/reloader"
 require "pry"
 require_relative "./event"
 require_relative "./country_adapter"
-
+require_relative "./coronavirus_adapter"
 =begin
     params: {
         @country_code
@@ -16,17 +16,12 @@ get "/v1/risk" do
     group_size = params["group_size"].to_i
     country_code = params["country_code"]
 
-    # get country data
     country_adapter = CountryAdapter.new(country_code)
-    binding.pry
-
-    # get the corona virus api data
-    # coronavirus_adapter = CoronavirusAdapter.new(country_code)
+    coronavirus_adapter = CoronavirusAdapter.new(country_code)
 
     event = Event.new(
         population: country_adapter.get_population, 
-        carriers: 5000, 
-        # carriers: coronavirus_adapter.get_carriers, 
+        carriers: coronavirus_adapter.get_carriers, 
         group_size: group_size
     )
 
